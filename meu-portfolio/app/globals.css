@@ -4,8 +4,13 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@theme inline {
-  /* Cores Customizadas do seu JSX */
+@theme {
+  /* 1. Fontes vinculadas às variáveis do Next.js */
+  --font-display: var(--font-jetbrains), monospace;
+  --font-mono: var(--font-jetbrains), monospace;
+  --font-body: var(--font-inter), sans-serif;
+
+  /* 2. Suas cores customizadas dinâmicas (atreladas ao :root e .dark) */
   --color-paper: var(--paper);
   --color-ink: var(--ink);
   --color-added: var(--added);
@@ -13,11 +18,7 @@
   --color-accent-blue: var(--accent-blue);
   --color-muted-slate: var(--muted-slate);
 
-  /* Fontes utlizadas nas classes */
-  --font-display: var(--font-sans);
-  --font-body: var(--font-sans);
-
-  /* Variáveis Padrão shadcn */
+  /* 3. Variáveis Padrão shadcn */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -49,14 +50,21 @@
   --radius-lg: var(--radius);
 }
 
+/* Utilitários customizados */
+@utility terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
 :root {
-  /* Tema Claro mapeando seus novos backgrounds */
-  --paper: oklch(0.99 0 0); /* Um branco/creme suave para o fundo */
-  --ink: oklch(0.145 0 0); /* Preto profundo para textos primários */
-  --muted-slate: oklch(0.556 0 0); /* Cinza médio para textos secundários */
-  --added: oklch(0.65 0.19 145); /* Verde Git Commit */
-  --removed: oklch(0.6 0.21 25); /* Vermelho Git Commit */
-  --accent-blue: oklch(0.55 0.2 250); /* Azul de destaque */
+  /* Tema Claro - Valores oklch originais ajustados para harmonia */
+  --paper: oklch(0.97 0.01 140); /* Tom bem próximo ao #F5F6F5 */
+  --ink: oklch(0.24 0.02 240); /* Tom bem próximo ao #1B222C */
+  --muted-slate: oklch(0.48 0.02 240);
+  --added: oklch(0.61 0.14 141);
+  --removed: oklch(0.53 0.17 26);
+  --accent-blue: oklch(0.48 0.18 255);
 
   --background: var(--paper);
   --foreground: var(--ink);
@@ -66,23 +74,23 @@
   --popover-foreground: var(--ink);
   --primary: var(--ink);
   --primary-foreground: var(--paper);
-  --secondary: oklch(0.97 0 0);
+  --secondary: oklch(0.92 0.01 240);
   --secondary-foreground: var(--ink);
-  --muted: oklch(0.97 0 0);
+  --muted: oklch(0.92 0.01 240);
   --muted-foreground: var(--muted-slate);
-  --accent: oklch(0.97 0 0);
+  --accent: oklch(0.92 0.01 240);
   --accent-foreground: var(--ink);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
+  --border: oklch(0.88 0.01 240);
+  --input: oklch(0.88 0.01 240);
   --ring: oklch(0.708 0 0);
   --radius: 0.625rem;
 }
 
 .dark {
-  /* Tema Escuro invertendo a lógica */
-  --paper: oklch(0.145 0 0); /* Fundo escuro */
-  --ink: oklch(0.985 0 0); /* Texto claro */
+  /* Tema Escuro - Inversão perfeita */
+  --paper: oklch(0.24 0.02 240);
+  --ink: oklch(0.97 0.01 140);
   --muted-slate: oklch(0.708 0 0);
   --added: oklch(0.72 0.15 145);
   --removed: oklch(0.68 0.17 25);

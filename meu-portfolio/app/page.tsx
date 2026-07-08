@@ -1,11 +1,13 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import JoaoBelizario from "@/public/JoaoBelizario.jpeg";
+import linkedinLogo from "@/public/linkedin.png";
+import whatsappLogo from "@/public/whatsapp.png";
 import {
   Carousel,
   CarouselContent,
@@ -17,9 +19,11 @@ import {
   GitCommit,
   GitBranch,
   Terminal,
-  Mail,
+  Phone,
   ExternalLink,
   Circle,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { STACK } from "@/data/dataPage";
 
@@ -49,35 +53,10 @@ const COMMITS = [
     added: 640,
     removed: 512,
   },
-  {
-    hash: "a3f9c1e",
-    projeto: "Nimbus Pay — gateway de pagamentos",
-    mensagem: "feat: reduz latência do checkout em 40%",
-    stack: ["Node.js", "PostgreSQL", "Redis"],
-    added: 842,
-    removed: 210,
-  },
-  {
-    hash: "a3f9c1e",
-    projeto: "Nimbus Pay — gateway de pagamentos",
-    mensagem: "feat: reduz latência do checkout em 40%",
-    stack: ["Node.js", "PostgreSQL", "Redis"],
-    added: 842,
-    removed: 210,
-  },
-  {
-    hash: "a3f9c1e",
-    projeto: "Nimbus Pay — gateway de pagamentos",
-    mensagem: "feat: reduz latência do checkout em 40%",
-    stack: ["Node.js", "PostgreSQL", "Redis"],
-    added: 842,
-    removed: 210,
-  },
 ];
 
 export default function PortfolioDev() {
-  const [email, setEmail] = useState("");
-
+  const { setTheme, theme } = useTheme();
   return (
     <div className="font-body text-ink w-full bg-paper">
       {/* NAV */}
@@ -101,9 +80,22 @@ export default function PortfolioDev() {
               contato
             </a>
           </nav>
-          <Button className="bg-accent-blue text-paper hover:bg-ink/90 font-mono text-sm px-3 py-2 md:px-4 md:py-2 w-auto md:w-fit">
-            Ver currículo (PDF)
-          </Button>
+          <div className="flex items-center gap-4">
+            <a
+              href="/Curriculo_Joao_Victor_Belizario_Dev.pdf"
+              download="Curriculo_Joao_Victor_Belizario_Dev.pdf">
+              <Button className="bg-accent-blue text-paper hover:bg-ink/90 font-mono text-sm w-full sm:w-auto">
+                Ver currículo (PDF)
+              </Button>
+            </a>
+            <Button
+              className="rounded-md"
+              variant="outline"
+              size="icon"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+              {theme === "dark" ? <Sun /> : <Moon />}
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -126,18 +118,32 @@ export default function PortfolioDev() {
               serviços prontos de terceiros
             </p>
             <div className="flex flex-wrap items-center gap-4">
-              <Button
-                size="lg"
-                className="bg-accent-blue hover:bg-accent-blue/90 text-white font-mono">
-                ver projetos
-                <GitCommit className="w-4 h-4 ml-2" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-ink/20 text-ink hover:bg-ink/5 font-mono">
-                falar comigo
-              </Button>
+              {/* GitHub */}
+              <a
+                href="https://github.com/BelizarioJv/BelizarioJv"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-transform duration-200 hover:scale-110">
+                <Button
+                  size="lg"
+                  className="bg-accent-blue hover:bg-accent-blue/90 text-white font-mono">
+                  ver projetos
+                  <GitCommit className="w-4 h-4 ml-2" />
+                </Button>
+              </a>
+
+              {/* WhatsApp */}
+              <a
+                href="https://wa.me/5531991615017"
+                rel="noopener noreferrer"
+                className="transition-transform duration-200 hover:scale-110">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-ink/20 text-ink hover:bg-ink/5 font-mono">
+                  falar comigo <Phone />
+                </Button>
+              </a>
             </div>
             <div className="flex gap-10 mt-12 font-mono">
               <div>
@@ -184,7 +190,7 @@ export default function PortfolioDev() {
                       <Badge
                         key={tech}
                         variant="outline"
-                        className="border-white/20 text-accent-blue font-mono text-xs">
+                        className="bg-accent text-accent-blue p-2 font-mono text-xs">
                         {tech}
                       </Badge>
                     ),
@@ -277,7 +283,7 @@ export default function PortfolioDev() {
       </section>
 
       {/* PROJETOS — carrossel estilo commit log */}
-      <section id="projetos" className="bg-white py-24 border-y border-ink/10">
+      <section id="projetos" className="bg-accent py-24 border-y border-ink/10">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex items-end justify-between mb-10">
             <div>
@@ -297,7 +303,7 @@ export default function PortfolioDev() {
                 <CarouselItem
                   key={c.hash}
                   className="md:basis-1/2 lg:basis-1/3">
-                  <Card className="h-full border border-ink/10 hover:border-accent-blue/40 transition-colors cursor-pointer">
+                  <Card className="h-full border border-ink/10 hover:border-accent-blue/40 transition-colors cursor-grab active:cursor-grabbing">
                     <CardContent className="p-6 flex flex-col h-full font-mono">
                       <div className="flex items-center justify-between mb-4 text-xs text-muted-slate">
                         <span className="flex items-center gap-1.5">
@@ -366,34 +372,48 @@ export default function PortfolioDev() {
       {/* CONTATO */}
       <footer id="contato" className="bg-ink text-paper py-16">
         <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-center">
+          {/* Textos da esquerda */}
           <div>
             <h3 className="font-display font-semibold text-accent-blue text-2xl mb-2">
               Tem um projeto em mente?
             </h3>
             <p className="text-accent-blue text-sm font-mono">
-              $ Vamos desenvolver juntos! Me mande um e-mail e vamos conversar
-              sobre o seu projeto.
+              $ Vamos desenvolver juntos! Escolha o melhor canal para
+              conversarmos sobre o seu projeto.
             </p>
           </div>
-          <form className="flex gap-2" onSubmit={(e) => e.preventDefault()}>
-            <div className="flex flex-col gap-2">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="seu@email.com"
-                className="font-mono bg-white/5 border border-white/15 rounded-md px-4 py-2 text-sm  text-accent-blue placeholder:text-paper/40 focus:outline-none focus:border-accent-blue md:w-64"
+
+          {/* Links de contato da direita */}
+          <div className="flex gap-6 items-center justify-center md:justify-end">
+            {/* WhatsApp */}
+            <a
+              href="https://wa.me/5531991615017"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-transform duration-200 hover:scale-110">
+              <Image
+                src={whatsappLogo}
+                alt="Ícone do WhatsApp"
+                placeholder="blur"
+                className="w-12 h-12 object-contain"
               />
-              <Button className="bg-added hover:bg-added/90 text-white font-mono shrink-0">
-                enviar
-              </Button>
-            </div>
-          </form>
+            </a>
+
+            {/* LinkedIn */}
+            <a
+              href="https://linkedin.com/in/joaobelizariodev/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-transform duration-200 hover:scale-110">
+              <Image
+                src={linkedinLogo}
+                alt="Ícone do LinkedIn"
+                placeholder="blur"
+                className="w-12 h-12 object-contain"
+              />
+            </a>
+          </div>
         </div>
-        <Separator className="bg-white/10 my-10 max-w-6xl mx-auto" />
-        <p className="max-w-6xl mx-auto px-6 text-xs text-accent-blue font-mono">
-          joaoBelizario.dev — desenvolvedor full-stack. Belo Horizonte, Brasil.
-        </p>
       </footer>
     </div>
   );
