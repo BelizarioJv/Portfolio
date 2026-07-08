@@ -26,37 +26,17 @@ import {
   Moon,
 } from "lucide-react";
 import { STACK } from "@/data/dataPage";
+import { useCommits } from "@/hooks/git/useCommits";
 
 // Mock data for commits and stack , vou consumir a API do GitHub depois, mas por enquanto vou usar dados mockados para o portfólio
-const COMMITS = [
-  {
-    hash: "a3f9c1e",
-    projeto: "Nimbus Pay — gateway de pagamentos",
-    mensagem: "feat: reduz latência do checkout em 40%",
-    stack: ["Node.js", "PostgreSQL", "Redis"],
-    added: 842,
-    removed: 210,
-  },
-  {
-    hash: "7d21b04",
-    projeto: "Trilha Saúde — API de agendamento",
-    mensagem: "feat: sincroniza agenda de 3 clínicas em tempo real",
-    stack: ["Go", "gRPC", "PostgreSQL"],
-    added: 1204,
-    removed: 88,
-  },
-  {
-    hash: "e88f2a1",
-    projeto: "Fluxo Contábil — motor de relatórios",
-    mensagem: "perf: reescreve pipeline de exportação, -70% tempo de build",
-    stack: ["Python", "Airflow", "S3"],
-    added: 640,
-    removed: 512,
-  },
-];
 
 export default function PortfolioDev() {
   const { setTheme, theme } = useTheme();
+  const { data: commits, isLoading, error } = useCommits();
+
+  if (isLoading) return <p>Carregando commits...</p>;
+  if (error) return <p>Erro ao carregar commits</p>;
+
   return (
     <div className="font-body text-ink w-full bg-paper">
       {/* NAV */}
@@ -297,48 +277,47 @@ export default function PortfolioDev() {
             <Terminal className="w-8 h-8 text-ink/20 hidden md:block" />
           </div>
 
-          <Carousel className="w-full">
+          <Carousel>
             <CarouselContent>
-              {COMMITS.map((c) => (
+              {commits?.map((commit) => (
                 <CarouselItem
-                  key={c.hash}
+                  key={commit.sha}
                   className="md:basis-1/2 lg:basis-1/3">
-                  <Card className="h-full border border-ink/10 hover:border-accent-blue/40 transition-colors cursor-grab active:cursor-grabbing">
-                    <CardContent className="p-6 flex flex-col h-full font-mono">
-                      <div className="flex items-center justify-between mb-4 text-xs text-muted-slate">
-                        <span className="flex items-center gap-1.5">
-                          <GitCommit className="w-3.5 h-3.5" />
-                          {c.hash}
-                        </span>
-                        <ExternalLink className="w-3.5 h-3.5 text-accent-blue" />
-                      </div>
-                      <p className="font-body font-semibold text-base mb-1">
-                        {c.projeto}
-                      </p>
-                      <p className="text-sm text-muted-slate mb-4">
-                        {c.mensagem}
-                      </p>
-                      <p className="text-sm mb-4">
-                        <span className="text-added">+{c.added}</span>{" "}
-                        <span className="text-removed">-{c.removed}</span>
-                      </p>
-                      <div className="flex flex-wrap gap-2 mt-auto pt-2">
-                        {c.stack.map((tech) => (
-                          <Badge
-                            key={tech}
-                            variant="outline"
-                            className="border-ink/15 text-ink text-xs">
-                            {tech}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <a
+                    href={commit.html_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block h-full">
+                    <Card className="h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                      <CardContent className="flex h-full flex-col p-6">
+                        <p className="font-body mb-2 text-base font-semibold text-ink">
+                          Commit #{commit.sha.slice(0, 7)}
+                        </p>
+
+                        <p className="mb-4 line-clamp-3 text-sm text-muted-slate">
+                          {commit.commit.message}
+                        </p>
+
+                        <div className="mt-auto flex items-center justify-between border-t border-ink/5 pt-4 text-[11px] text-muted-slate">
+                          <span className="truncate max-w-[120px]">
+                            @{commit.commit.author.name}
+                          </span>
+
+                          <span>
+                            {new Date(
+                              commit.commit.author.date,
+                            ).toLocaleDateString("pt-BR")}
+                          </span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </a>
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="static translate-y-0 mr-2 mt-6 border-ink/20" />
-            <CarouselNext className="static translate-y-0 mt-6 border-ink/20" />
+
+            <CarouselPrevious className="static mt-6 mr-2 translate-y-0 border-ink/20" />
+            <CarouselNext className="static mt-6 translate-y-0 border-ink/20" />
           </Carousel>
         </div>
       </section>
