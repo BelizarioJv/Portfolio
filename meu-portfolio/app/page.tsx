@@ -41,12 +41,9 @@ export default function PortfolioDev() {
   const { setTheme, theme } = useTheme();
   const { data: commits, isLoading, error } = useCommits();
   const [lang, setLang] = useState<Language>("pt");
-  const { data: repo } = useRepo();
+  const { data: repo, isLoading: isLoadingRepo, error: errorRepo } = useRepo();
 
   const t = TRANSLATIONS[lang];
-
-  if (isLoading) return <p>Carregando commits...</p>;
-  if (error) return <p>Erro ao carregar commits</p>;
 
   return (
     <div className="font-body text-ink w-full bg-paper">
@@ -306,8 +303,15 @@ export default function PortfolioDev() {
             <Terminal className="w-8 h-8 text-ink/20 hidden md:block" />
           </div>
 
-          {/* Conteúdo do Repositório */}
-          {repo ? (
+          {isLoadingRepo ? (
+            <div className="text-center py-12 font-mono text-sm text-muted-slate animate-pulse">
+              Carregando dados do repositório...
+            </div>
+          ) : errorRepo ? (
+            <div className="text-center py-12 font-mono text-sm text-destructive">
+              Erro ao carregar dados do GitHub.
+            </div>
+          ) : repo ? (
             <a
               href={repo.html_url}
               target="_blank"
@@ -315,7 +319,6 @@ export default function PortfolioDev() {
               className="block max-w-2xl mx-auto group">
               <Card className="transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-lg border-ink/10 bg-card/50 backdrop-blur-sm">
                 <CardContent className="flex flex-col p-8">
-                  {/* Topo do Card: Nome e Linguagem */}
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <h3 className="font-mono text-xl font-bold text-ink group-hover:text-accent-blue transition-colors flex items-center gap-2">
@@ -326,49 +329,36 @@ export default function PortfolioDev() {
                         {repo.full_name}
                       </p>
                     </div>
-
                     {repo.language && (
                       <span className="px-3 py-1 bg-ink/5 rounded-full text-xs font-mono text-ink/80 border border-ink/10">
                         {repo.language}
                       </span>
                     )}
                   </div>
-
-                  {/* Descrição */}
                   <p className="mb-8 font-body text-sm leading-relaxed text-muted-slate">
                     {repo.description ||
                       "Nenhuma descrição fornecida para este repositório."}
                   </p>
-
-                  {/* Rodapé: Estatísticas do GitHub */}
                   <div className="mt-auto flex items-center gap-6 border-t border-ink/5 pt-6 font-mono text-xs text-muted-slate">
                     <div className="flex items-center gap-1.5 hover:text-ink transition-colors">
                       <Star className="w-4 h-4 text-amber-500 fill-amber-500/10" />
                       <span>{repo.stargazers_count} stars</span>
                     </div>
-
                     <div className="flex items-center gap-1.5 hover:text-ink transition-colors">
                       <span>{repo.forks_count} forks</span>
                     </div>
-
                     <div className="flex items-center gap-1.5 hover:text-ink transition-colors">
                       <CircleAlert className="w-4 h-4 text-emerald-500" />
                       <span>{repo.open_issues_count} issues</span>
                     </div>
-
                     <span className="ml-auto text-[10px] opacity-60 hidden sm:inline">
-                      @{repo.owner.login}
+                      @{repo.owner?.login}
                     </span>
                   </div>
                 </CardContent>
               </Card>
             </a>
-          ) : (
-            /* Estado de Loading Simples */
-            <div className="text-center py-12 font-mono text-sm text-muted-slate animate-pulse">
-              Carregando dados do GitHub...
-            </div>
-          )}
+          ) : null}
         </div>
       </section>
 
@@ -387,48 +377,55 @@ export default function PortfolioDev() {
             <Terminal className="w-8 h-8 text-ink/20 hidden md:block" />
           </div>
 
-          <Carousel>
-            <CarouselContent>
-              {commits?.map((commit) => (
-                <CarouselItem
-                  key={commit.sha}
-                  className="md:basis-1/2 lg:basis-1/3">
-                  <a
-                    href={commit.html_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block h-full">
-                    <Card className="h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-                      <CardContent className="flex h-full flex-col p-6">
-                        <p className="font-body mb-2 text-base font-semibold text-ink">
-                          Commit #{commit.sha.slice(0, 7)}
-                        </p>
-
-                        <p className="mb-4 line-clamp-3 text-sm text-muted-slate">
-                          {commit.commit.message}
-                        </p>
-
-                        <div className="mt-auto flex items-center justify-between border-t border-ink/5 pt-4 text-[11px] text-muted-slate">
-                          <span className="truncate max-w-[120px]">
-                            @{commit.commit.author.name}
-                          </span>
-
-                          <span>
-                            {new Date(
-                              commit.commit.author.date,
-                            ).toLocaleDateString("pt-BR")}
-                          </span>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </a>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-
-            <CarouselPrevious className="static mt-6 mr-2 translate-y-0 border-ink/20" />
-            <CarouselNext className="static mt-6 translate-y-0 border-ink/20" />
-          </Carousel>
+          {/* Tratamento isolado para os COMMITS */}
+          {isLoading ? (
+            <div className="text-center py-12 font-mono text-sm text-muted-slate animate-pulse">
+              Carregando commits...
+            </div>
+          ) : error ? (
+            <div className="text-center py-12 font-mono text-sm text-destructive">
+              Erro ao carregar commits do GitHub.
+            </div>
+          ) : (
+            <Carousel>
+              <CarouselContent>
+                {commits?.map((commit) => (
+                  <CarouselItem
+                    key={commit.sha}
+                    className="md:basis-1/2 lg:basis-1/3">
+                    <a
+                      href={commit.html_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block h-full">
+                      <Card className="h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                        <CardContent className="flex h-full flex-col p-6">
+                          <p className="font-body mb-2 text-base font-semibold text-ink">
+                            Commit #{commit.sha.slice(0, 7)}
+                          </p>
+                          <p className="mb-4 line-clamp-3 text-sm text-muted-slate">
+                            {commit.commit.message}
+                          </p>
+                          <div className="mt-auto flex items-center justify-between border-t border-ink/5 pt-4 text-[11px] text-muted-slate">
+                            <span className="truncate max-w-120px">
+                              @{commit.commit.author?.name}
+                            </span>
+                            <span>
+                              {new Date(
+                                commit.commit.author?.date,
+                              ).toLocaleDateString("pt-BR")}
+                            </span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </a>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="static mt-6 mr-2 translate-y-0 border-ink/20" />
+              <CarouselNext className="static mt-6 translate-y-0 border-ink/20" />
+            </Carousel>
+          )}
         </div>
       </section>
 
