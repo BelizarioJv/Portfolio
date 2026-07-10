@@ -1,10 +1,12 @@
 "use client";
 import Image from "next/image";
+import { useState } from "react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import Typewriter from "typewriter-effect";
 import JoaoBelizario from "@/public/JoaoBelizario.jpeg";
 import linkedinLogo from "@/public/linkedin.png";
 import whatsappLogo from "@/public/whatsapp.png";
@@ -16,6 +18,9 @@ import {
   CarouselNext,
 } from "@/components/ui/carousel";
 import {
+  Globe,
+  Star,
+  CircleAlert,
   GitCommit,
   GitBranch,
   Terminal,
@@ -25,14 +30,20 @@ import {
   Sun,
   Moon,
 } from "lucide-react";
-import { STACK } from "@/data/dataPage";
+import { STACK, TRANSLATIONS } from "@/dictionary/dataPage";
+import { Language } from "@/types/Language";
 import { useCommits } from "@/hooks/git/useCommits";
+import { useRepo } from "@/hooks/git/useRepo";
 
 // Mock data for commits and stack , vou consumir a API do GitHub depois, mas por enquanto vou usar dados mockados para o portfólio
 
 export default function PortfolioDev() {
   const { setTheme, theme } = useTheme();
   const { data: commits, isLoading, error } = useCommits();
+  const [lang, setLang] = useState<Language>("pt");
+  const { data: repo } = useRepo();
+
+  const t = TRANSLATIONS[lang];
 
   if (isLoading) return <p>Carregando commits...</p>;
   if (error) return <p>Erro ao carregar commits</p>;
@@ -46,6 +57,7 @@ export default function PortfolioDev() {
             <GitBranch className="w-4 h-4 text-accent-blue" />
             joaoBelizario.dev
           </span>
+          {/* Links */}
           <nav className="hidden md:flex items-center gap-8 text-sm text-muted-slate font-mono">
             <a href="#projetos" className="hover:text-ink transition-colors">
               projetos
@@ -60,6 +72,7 @@ export default function PortfolioDev() {
               contato
             </a>
           </nav>
+          {/* Curriculo e Thema */}
           <div className="flex items-center gap-4">
             <a
               href="/Curriculo_Joao_Victor_Belizario_Dev.pdf"
@@ -75,6 +88,20 @@ export default function PortfolioDev() {
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
               {theme === "dark" ? <Sun /> : <Moon />}
             </Button>
+            {/* Seletor de Idioma Slim */}
+            <div className="flex items-center gap-2 bg-ink/40 border border-slate-800 rounded-lg p-1 font-mono text-xs">
+              <Globe className="w-3.5 h-3.5 text-slate-400 ml-1" />
+              <button
+                onClick={() => setLang("pt")}
+                className={`px-2 py-1 rounded ${lang === "pt" ? "bg-accent-blue text-black font-bold" : "text-slate-400 hover:text-white"}`}>
+                PT
+              </button>
+              <button
+                onClick={() => setLang("en")}
+                className={`px-2 py-1 rounded ${lang === "en" ? "bg-accent-blue text-black font-bold" : "text-slate-400 hover:text-white"}`}>
+                EN
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -85,17 +112,25 @@ export default function PortfolioDev() {
           <div>
             <Badge className="bg-added/10 text-added border border-added/30 mb-6 font-mono text-xs">
               <Circle className="w-2 h-2 mr-1.5 fill-added text-added" />
-              disponível para novos projetos
+              {t.hero.subtitle}
             </Badge>
-            <h1 className="font-display font-semibold text-4xl md:text-5xl leading-[1.2] mb-6">
-              João Victor Belizario
-              <br />
-              <span className="text-accent-blue">desenvolvedor full-stack</span>
-            </h1>
+            <p className="font-display font-semibold text-4xl md:text-5xl leading-[1.2] mb-6">
+              <span className="inline-block overflow-hidden whitespace-wrap border-r-4 border-accent-blue animate-typing animate-blink pr-2">
+                <Typewriter
+                  options={{
+                    strings: [
+                      'João Victor Belizario, <span class="text-accent-blue">desenvolvedor full-stack</span>',
+                    ],
+                    autoStart: true,
+                    loop: true,
+                    delay: 100,
+                    cursor: "|",
+                  }}
+                />
+              </span>
+            </p>
             <p className="text-muted-slate text-lg max-w-md mb-8">
-              Eu aprendo a construir APIs e produtos web que funcionam de
-              verdade, desde o banco de dados até o deploy, sem depender de
-              serviços prontos de terceiros
+              {t.hero.description}
             </p>
             <div className="flex flex-wrap items-center gap-4">
               {/* GitHub */}
@@ -107,7 +142,7 @@ export default function PortfolioDev() {
                 <Button
                   size="lg"
                   className="bg-accent-blue hover:bg-accent-blue/90 text-white font-mono">
-                  ver projetos
+                  {t.hero.ctaProjects}
                   <GitCommit className="w-4 h-4 ml-2" />
                 </Button>
               </a>
@@ -121,47 +156,47 @@ export default function PortfolioDev() {
                   size="lg"
                   variant="outline"
                   className="border-ink/20 text-ink hover:bg-ink/5 font-mono">
-                  falar comigo <Phone />
+                  {t.hero.ctaContact} <Phone />
                 </Button>
               </a>
             </div>
             <div className="flex gap-10 mt-12 font-mono">
               <div>
                 <p className="text-2xl text-accent-blue">2+</p>
-                <p className="text-sm text-muted-slate">anos de estudos</p>
+                <p className="text-sm text-muted-slate">
+                  {t.hero.aboutContent1}
+                </p>
               </div>
               <div>
                 <p className="text-2xl text-accent-blue">+50</p>
                 <p className="text-sm text-muted-slate">
-                  repositórios no GitHub
+                  {t.hero.aboutContent2}
                 </p>
               </div>
               <div>
                 <p className="text-2xl text-accent-blue">100%</p>
-                <p className="text-sm text-muted-slate">focado em aprender</p>
+                <p className="text-sm text-muted-slate">
+                  {t.hero.aboutContent3}
+                </p>
               </div>
             </div>
           </div>
 
           {/* ASIDE — card estilo terminal */}
           <aside className="md:sticky md:top-24">
-            <Card className="bg-ink text-paper border-none rounded-lg overflow-hidden">
+            <Card className="bg-accent text-paper border-none rounded-lg overflow-hidden">
               <CardContent className="p-5 font-mono text-sm space-y-3">
                 <h1 className=" pl-4 text-accent-blue">joao_belizario</h1>
-                <p>
+                <p className="text-accent-foreground">
                   <span className="text-added ">$</span> cat status.txt
                 </p>
-                <p className="pl-4 text-accent-blue">
-                  disponível para estagio/Dev.junior
-                </p>
-                <p>
+                <p className="pl-4 text-accent-blue">{t.status.available}</p>
+                <p className="text-accent-foreground">
                   <span className="text-added">$</span> cat location.txt
                 </p>
-                <p className=" pl-4 text-accent-blue">
-                  Belo Horizonte, MG (remoto)/(presencial)
-                </p>
+                <p className=" pl-4 text-accent-blue">{t.status.location}</p>
                 <Separator className="bg-white/10 my-2" />
-                <p>
+                <p className="text-accent-foreground">
                   <span className="text-added">$</span> ls stack/
                 </p>
                 <div className="flex flex-wrap gap-2 pl-4">
@@ -188,73 +223,66 @@ export default function PortfolioDev() {
         id="about"
         className="max-w-6xl mx-auto px-6 py-20 border-t border-ink/5">
         <div className="grid md:grid-cols-[1fr_1.3fr] gap-12 items-center">
-          {/* ESQUERDA — Mimnha Foto / Card Visual */}
+          {/* ESQUERDA — Minha Foto / Card Visual */}
           <aside className="relative flex justify-center items-center">
             <div className="relative w-full max-w-sm aspect-square bg-ink rounded-lg overflow-hidden border border-ink/10 shadow-xl group">
               <Image
                 src={JoaoBelizario}
                 alt="Foto de João Victor Belizario"
                 placeholder="blur"
-                className="object-cover w-full h-full"
+                className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
               />
-              {/* Detalhe estético no canto da foto */}
               <div className="absolute bottom-3 left-3 bg-ink/80 backdrop-blur-sm px-3 py-1.5 rounded font-mono text-xs text-accent-blue border border-white/10">
-                <span className="text-added">$</span> echo "Olá, mundo!"
+                <span className="text-emerald-500">$</span> echo "Olá, mundo!"
               </div>
             </div>
           </aside>
 
           {/* DIREITA — Texto Sobre Mim */}
           <div>
-            <Badge className="bg-accent-blue/10 text-accent-blue border border-accent-blue/30 mb-6 font-mono text-xs">
-              <GitCommit className="w-2 h-2 mr-1.5 text-accent-blue" />
-              root / quem_sou_eu
+            <Badge className="bg-accent-blue/10 text-accent-blue border border-accent-blue/30 mb-6 font-mono text-xs px-3 py-1">
+              <GitCommit className="w-3 h-3 mr-1.5 text-accent-blue" />
+              {t.about.badge}
             </Badge>
 
             <h2 className="font-display font-semibold text-3xl md:text-4xl leading-[1.2] mb-6">
-              Desenvolvendo soluções <br />
-              <span className="text-muted-slate">de ponta a ponta</span>
+              {t.about.title} <br />
+              <span className="text-muted-slate">{t.about.titleAccent}</span>
             </h2>
 
             <div className="text-muted-slate text-base space-y-4 max-w-xl mb-8">
+              <p>{t.about.p1}</p>
               <p>
-                Minha jornada na programação começou pelo desejo de entender
-                como a engrenagem funciona por trás dos sistemas ERP´S. Em vez
-                de apenas consumir ferramentas prontas, gosto de abrir a caixa
-                preta e entender do protocolo HTTP até a persistência dos dados.
+                {lang === "pt" ? "Focado no ecossistema " : "Focused on the "}
+                <span className="text-accent-blue font-mono font-medium">
+                  Node.js
+                </span>
+                {lang === "pt" ? " e automações com " : " ecosystem and "}
+                <span className="text-accent-blue font-mono font-medium">
+                  {" "}
+                  Python
+                </span>
+                ,{t.about.p2.split("Python")[1] || t.about.p2}
               </p>
-              <p>
-                Focado no ecossistema{" "}
-                <span className="text-accent-blue font-mono">Node.js</span> e
-                automações com
-                <span className="text-accent-blue font-mono"> Python</span>,
-                construo arquiteturas backend robustas, modelagem de dados
-                eficiente no PostgreSQL e isolamento de ambientes com Docker.
-              </p>
-              <p>
-                Atualmente moro em Belo Horizonte e estou em busca da minha
-                primeira oportunidade formal como <strong>Estagiário</strong> ou{" "}
-                <strong>Desenvolvedor Júnior</strong>, pronto para contribuir
-                com código limpo e aprender com problemas de escala real.
-              </p>
+              <p>{t.about.p3}</p>
             </div>
 
             {/* Mini grid de soft-skills */}
-            <div className="flex gap-10 font-mono border-t border-ink/5 pt-8">
+            <div className="flex flex-wrap gap-10 font-mono border-t border-ink/5 pt-8">
               <div>
-                <p className="text-xs text-muted-slate uppercase tracking-wider">
-                  Metodologia
+                <p className="text-[10px] text-muted-slate uppercase tracking-[0.15em] mb-1">
+                  {t.about.labelMethod}
                 </p>
-                <p className="text-sm text-ink font-semibold mt-1">
-                  Código Limpo / Autônomo
+                <p className="text-sm text-ink font-semibold">
+                  {t.about.valMethod}
                 </p>
               </div>
               <div>
-                <p className="text-xs text-muted-slate uppercase tracking-wider">
-                  Foco Atual
+                <p className="text-[10px] text-muted-slate uppercase tracking-[0.15em] mb-1">
+                  {t.about.labelFocus}
                 </p>
-                <p className="text-sm text-ink font-semibold mt-1">
-                  Arquitetura de APIs
+                <p className="text-sm text-ink font-semibold">
+                  {t.about.valFocus}
                 </p>
               </div>
             </div>
@@ -262,16 +290,98 @@ export default function PortfolioDev() {
         </div>
       </section>
 
-      {/* PROJETOS — carrossel estilo commit log */}
+      {/* PROJETOS — card estilo GitHub */}
+      <section id="projetos" className="bg-accent py-24 border-y border-ink/10">
+        <div className="max-w-6xl mx-auto px-6">
+          {/* Cabeçalho */}
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <p className="font-mono text-xs uppercase text-accent-blue tracking-wide mb-2">
+                git show --repo:senzalas-bar
+              </p>
+              <h2 className="font-display font-semibold text-3xl">
+                {t.projectRepo.title}
+              </h2>
+            </div>
+            <Terminal className="w-8 h-8 text-ink/20 hidden md:block" />
+          </div>
+
+          {/* Conteúdo do Repositório */}
+          {repo ? (
+            <a
+              href={repo.html_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block max-w-2xl mx-auto group">
+              <Card className="transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-lg border-ink/10 bg-card/50 backdrop-blur-sm">
+                <CardContent className="flex flex-col p-8">
+                  {/* Topo do Card: Nome e Linguagem */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 className="font-mono text-xl font-bold text-ink group-hover:text-accent-blue transition-colors flex items-center gap-2">
+                        {repo.name}
+                        <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </h3>
+                      <p className="text-xs text-muted-slate font-mono mt-1">
+                        {repo.full_name}
+                      </p>
+                    </div>
+
+                    {repo.language && (
+                      <span className="px-3 py-1 bg-ink/5 rounded-full text-xs font-mono text-ink/80 border border-ink/10">
+                        {repo.language}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Descrição */}
+                  <p className="mb-8 font-body text-sm leading-relaxed text-muted-slate">
+                    {repo.description ||
+                      "Nenhuma descrição fornecida para este repositório."}
+                  </p>
+
+                  {/* Rodapé: Estatísticas do GitHub */}
+                  <div className="mt-auto flex items-center gap-6 border-t border-ink/5 pt-6 font-mono text-xs text-muted-slate">
+                    <div className="flex items-center gap-1.5 hover:text-ink transition-colors">
+                      <Star className="w-4 h-4 text-amber-500 fill-amber-500/10" />
+                      <span>{repo.stargazers_count} stars</span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 hover:text-ink transition-colors">
+                      <span>{repo.forks_count} forks</span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 hover:text-ink transition-colors">
+                      <CircleAlert className="w-4 h-4 text-emerald-500" />
+                      <span>{repo.open_issues_count} issues</span>
+                    </div>
+
+                    <span className="ml-auto text-[10px] opacity-60 hidden sm:inline">
+                      @{repo.owner.login}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            </a>
+          ) : (
+            /* Estado de Loading Simples */
+            <div className="text-center py-12 font-mono text-sm text-muted-slate animate-pulse">
+              Carregando dados do GitHub...
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* PROJETOS — carrossel estilo commit  */}
       <section id="projetos" className="bg-accent py-24 border-y border-ink/10">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex items-end justify-between mb-10">
             <div>
               <p className="font-mono text-xs uppercase text-accent-blue tracking-wide mb-2">
-                git log --projetos
+                git log --projetoSenzalasBar
               </p>
               <h2 className="font-display font-semibold text-3xl">
-                Últimos projetos
+                {t.projectCommit.title}
               </h2>
             </div>
             <Terminal className="w-8 h-8 text-ink/20 hidden md:block" />
@@ -325,7 +435,7 @@ export default function PortfolioDev() {
       {/* STACK */}
       <section id="stack" className="bg-paper py-24">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="font-display font-semibold text-3xl mb-10">Stack</h2>
+          <h2 className="font-display font-semibold text-3xl mb-10">Stack´s</h2>
           <div className="grid md:grid-cols-3 gap-10">
             {Object.entries(STACK).map(([categoria, techs]) => (
               <div key={categoria}>
@@ -349,16 +459,15 @@ export default function PortfolioDev() {
       </section>
 
       {/* CONTATO */}
-      <footer id="contato" className="bg-ink text-paper py-16">
+      <footer id="contato" className="bg-accent text-paper py-16">
         <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-center">
           {/* Textos da esquerda */}
           <div>
             <h3 className="font-display font-semibold text-accent-blue text-2xl mb-2">
-              Tem um projeto em mente?
+              {t.footer.title}
             </h3>
             <p className="text-accent-blue text-sm font-mono">
-              $ Vamos desenvolver juntos! Escolha o melhor canal para
-              conversarmos sobre o seu projeto.
+              {t.footer.discription}
             </p>
           </div>
 
