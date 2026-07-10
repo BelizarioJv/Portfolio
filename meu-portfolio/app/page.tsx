@@ -35,8 +35,6 @@ import { Language } from "@/types/Language";
 import { useCommits } from "@/hooks/git/useCommits";
 import { useRepo } from "@/hooks/git/useRepo";
 
-// Mock data for commits and stack , vou consumir a API do GitHub depois, mas por enquanto vou usar dados mockados para o portfólio
-
 export default function PortfolioDev() {
   const { setTheme, theme } = useTheme();
   const { data: commits, isLoading, error } = useCommits();
