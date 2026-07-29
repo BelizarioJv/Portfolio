@@ -47,7 +47,7 @@ export default function PortfolioDev() {
     <div className="font-body text-ink w-full bg-paper">
       {/* NAV */}
       <header className="sticky top-0 z-20 bg-paper/90 backdrop-blur border-b border-ink/10">
-        <div className="md:max-w-6xl mx-auto flex items-center justify-between px-4 sm:flex flex-col">
+        <div className="flex flex-col sm:flex-col md:flex-row max-w-6xl mx-auto items-center justify-between p-4">
           {/* Brand Logo */}
           <span className="font-display font-semibold text-base sm:text-lg flex items-center gap-1.5 sm:gap-2 shrink-0">
             <GitBranch className="w-4 h-4 text-accent-blue" />
