@@ -47,12 +47,14 @@ export default function PortfolioDev() {
     <div className="font-body text-ink w-full bg-paper">
       {/* NAV */}
       <header className="sticky top-0 z-20 bg-paper/90 backdrop-blur border-b border-ink/10">
-        <div className="md:max-w-6xl mx-auto flex flex-wrap items-center justify-between px-6 py-4">
-          <span className="font-display font-semibold text-lg flex items-center gap-2">
+        <div className="md:max-w-6xl mx-auto flex items-center justify-between px-4 sm:flex flex-col">
+          {/* Brand Logo */}
+          <span className="font-display font-semibold text-base sm:text-lg flex items-center gap-1.5 sm:gap-2 shrink-0">
             <GitBranch className="w-4 h-4 text-accent-blue" />
             joaoBelizario.dev
           </span>
-          {/* Links */}
+
+          {/* Links (Desktop apenas) */}
           <nav className="hidden md:flex items-center gap-8 text-sm text-muted-slate font-mono">
             <a href="#projetos" className="hover:text-ink transition-colors">
               projetos
@@ -67,33 +69,52 @@ export default function PortfolioDev() {
               contato
             </a>
           </nav>
-          {/* Curriculo e Thema */}
-          <div className="flex items-center gap-4">
+
+          {/* Ações (Ajustado para Mobile e Desktop) */}
+          <div className="flex items-center gap-2 sm:gap-4">
+            {/* Botão Currículo */}
             <a
               href="/Curriculo_Joao_Victor_Belizario_Dev.pdf"
-              download="Curriculo_Joao_Victor_Belizario_Dev.pdf">
-              <Button className="bg-accent-blue text-paper hover:bg-ink/90 font-mono text-sm w-full sm:w-auto">
-                Ver currículo (PDF)
+              download="Curriculo_Joao_Victor_Belizario_Dev.pdf"
+              className="shrink-0">
+              <Button className="bg-accent-blue text-paper hover:bg-ink/90 font-mono text-xs sm:text-sm px-2.5 sm:px-4 py-1.5">
+                <span className="hidden sm:inline">Ver currículo (PDF)</span>
+                <span className="sm:hidden">Currículo</span>
               </Button>
             </a>
+
+            {/* Botão Tema */}
             <Button
-              className="rounded-md"
+              className="rounded-md shrink-0 h-8 w-8 sm:h-9 sm:w-9"
               variant="outline"
               size="icon"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-              {theme === "dark" ? <Sun /> : <Moon />}
+              {theme === "dark" ? (
+                <Sun className="w-4 h-4" />
+              ) : (
+                <Moon className="w-4 h-4" />
+              )}
             </Button>
-            {/* Seletor de Idioma Slim */}
-            <div className="flex items-center gap-2 bg-ink/40 border border-slate-800 rounded-lg p-1 font-mono text-xs">
-              <Globe className="w-3.5 h-3.5 text-slate-400 ml-1" />
+
+            {/* Seletor de Idioma */}
+            <div className="flex items-center gap-1 sm:gap-1.5 bg-ink/40 border border-slate-800 rounded-lg p-0.5 sm:p-1 font-mono text-[10px] sm:text-xs shrink-0">
+              <Globe className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-400 ml-0.5 sm:ml-1 hidden xs:block" />
               <button
                 onClick={() => setLang("pt")}
-                className={`px-2 py-1 rounded ${lang === "pt" ? "bg-accent-blue text-black font-bold" : "text-slate-400 hover:text-white"}`}>
+                className={`px-1.5 sm:px-2 py-0.5 rounded transition-colors ${
+                  lang === "pt"
+                    ? "bg-accent-blue text-black font-bold"
+                    : "text-slate-400 hover:text-white"
+                }`}>
                 PT
               </button>
               <button
                 onClick={() => setLang("en")}
-                className={`px-2 py-1 rounded ${lang === "en" ? "bg-accent-blue text-black font-bold" : "text-slate-400 hover:text-white"}`}>
+                className={`px-1.5 sm:px-2 py-0.5 rounded transition-colors ${
+                  lang === "en"
+                    ? "bg-accent-blue text-black font-bold"
+                    : "text-slate-400 hover:text-white"
+                }`}>
                 EN
               </button>
             </div>

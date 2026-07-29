@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import { ThemeProvider } from "next-themes";
 import { Providers } from "@/app/providers";
 import "./globals.css";
 
@@ -32,11 +31,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${jetbrains.variable} ${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-paper text-ink font-body">
-        <Providers>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            {children}
-          </ThemeProvider>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
